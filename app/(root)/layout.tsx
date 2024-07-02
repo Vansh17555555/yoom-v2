@@ -1,3 +1,4 @@
+
 import Navbar from '@/components/Navbar'
 import Sidebar from '@/components/Sidebar'
 import MyApp from '@/providers/StreamClientPrvider'
@@ -9,7 +10,6 @@ const Homelayout = ({children}:{children:React.ReactNode}) => {
   return (
     <main>
     <MyApp>{children}</MyApp>
-  
     </main>
               
   )
