@@ -8,16 +8,21 @@ import {
   MessageList,
   Thread,
   Window,
-  useChatContext
+  useChatContext,
 } from 'stream-chat-react';
 import 'stream-chat-react/dist/css/index.css';
 import { useUser } from '@clerk/nextjs';
 import Loader from '@/components/Loader';
+import type { Channel as ChannelType } from 'stream-chat';
 
-const ChatComponent = ({ callId }) => {
+interface ChatComponentProps {
+  callId: string;
+}
+
+const ChatComponent: React.FC<ChatComponentProps> = ({ callId }) => {
   const { user } = useUser();
   const { client } = useChatContext();
-  const [channel, setChannel] = useState(null);
+  const [channel, setChannel] = useState<ChannelType | null>(null);
 
   useEffect(() => {
     if (!user || !client) return;
