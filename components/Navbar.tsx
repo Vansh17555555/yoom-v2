@@ -2,7 +2,7 @@ import React from "react";
 import Link from "next/link";
 import Image from "next/image";
 import Mobilenav from "./mobilenav";
-
+import {SignedIn,UserButton} from "@clerk/nextjs"
 const Navbar = () => {
   return (
     <nav className="flex-between fixed z-50  bg-[#1C1C1C] py-4 lg:px-10 w-full text-white">
@@ -26,6 +26,7 @@ const Navbar = () => {
         <Link href="/personal-room">Personal-Room</Link>
         <Mobilenav />
       </div>
+      <div className='flex-between gap-5'><SignedIn><UserButton/></SignedIn></div>
     </nav>
   );
 };

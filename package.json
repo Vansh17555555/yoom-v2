@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@clerk/nextjs": "^5.2.2",
     "@huggingface/inference": "^2.7.0",
     "@radix-ui/react-alert-dialog": "^1.1.1",
     "@radix-ui/react-collapsible": "^1.1.0",
@@ -18,6 +19,7 @@
     "@radix-ui/react-toast": "^1.1.5",
     "@stream-io/node-sdk": "^0.2.5",
     "@stream-io/video-react-sdk": "^1.1.4",
+    "ably": "^2.2.1",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "lucide-react": "^0.383.0",
@@ -25,6 +27,8 @@
     "react": "^18",
     "react-datepicker": "^6.9.0",
     "react-dom": "^18",
+    "stream-chat": "^8.37.0",
+    "stream-chat-react": "^11.23.0",
     "tailwind-merge": "^2.3.0",
     "tailwindcss-animate": "^1.0.7"
   },

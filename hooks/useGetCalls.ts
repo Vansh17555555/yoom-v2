@@ -1,20 +1,16 @@
 import { Call, useStreamVideoClient } from "@stream-io/video-react-sdk";
 import { useEffect, useState } from "react";
-
+import { useUser } from "@clerk/nextjs";
 export const useGetCalls = () => {
   const [calls, setCalls] = useState<Call[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const client = useStreamVideoClient();
-
+  const {user}=useUser()
   useEffect(() => {
-    const user = {
-      id: 'user-id',
-      name: 'user-name',
-      image: 'user-image-url',
-    };
+  
 
     const loadCalls = async () => {
-      if (!client || !user.id) return;
+      if (!client || !user?.id) return;
       setIsLoading(true);
       try {
         const { calls } = await client.queryCalls({
@@ -35,7 +31,7 @@ export const useGetCalls = () => {
       }
     };
     loadCalls();
-  }, [client]);
+  }, [client,user?.id]);
 
   const now = new Date();
 

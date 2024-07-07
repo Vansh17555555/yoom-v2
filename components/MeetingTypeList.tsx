@@ -5,15 +5,17 @@ import Image from 'next/image';
 import HomeCard from './HomeCard';
 import MeetingModal from './MeetingModal';
 import { Call, useStreamVideoClient } from '@stream-io/video-react-sdk';
+import { useChatContext } from 'stream-chat-react';
 import { useToast } from './ui/use-toast';
 import { Textarea } from './ui/textarea';
 import ReactDatePicker from "react-datepicker"
 import { Input } from './ui/input';
-
+import {useUser} from "@clerk/nextjs"
 const MeetingTypeList = () => {
   const router = useRouter();
   const [meetingState, setMeetingState] = useState<'isScheduleMeeting' | 'isJoiningMeeting' | 'isInstantMeeting' | undefined>();
-  const client = useStreamVideoClient();
+  const { user } = useUser();
+  const Videoclient = useStreamVideoClient();
   const [values, setValues] = useState({
     dateTime: new Date(),
     description: '',
@@ -22,20 +24,15 @@ const MeetingTypeList = () => {
   const [callData, setCallData] = useState<Call>();
   const { toast } = useToast();
 
-  const user = {
-    id: 'user-id',
-    name: 'user-name',
-    image: 'user-image-url',
-  };
-
+  const {client}=useChatContext()
   const createMeeting = async () => {
-    if (!client || !user) return;
+    if (!Videoclient || !user) return;
 
     try {
       const id = crypto.randomUUID();
-      const call = client.call('default', id);
+      const call = Videoclient.call('default', id);
       if (!call) throw new Error('Failed to create call');
-
+      
       const startsAt = values.dateTime.toISOString() || new Date(Date.now()).toISOString();
       const description = values.description || 'Instant meeting';
       await call.getOrCreate({
