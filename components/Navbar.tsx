@@ -19,7 +19,6 @@ const Navbar = () => {
         </p>
       </Link>
       <div className="flex-between gap-10">
-        <Link href="/dashboard">Dashboard</Link>
         <Link href="/upcoming">Upcoming</Link>
         <Link href="/previous">Previous</Link>
         <Link href="/recordings">Recordings</Link>
