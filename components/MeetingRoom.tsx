@@ -1,5 +1,5 @@
 'use client';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   CallControls,
   CallParticipantsList,
@@ -9,9 +9,10 @@ import {
   SpeakerLayout,
   useCallStateHooks,
   useCall,
+  TranscriptionSettingsRequestModeEnum
 } from '@stream-io/video-react-sdk';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { Users, LayoutList, MessageCircle } from 'lucide-react';
+import { Users, LayoutList, MessageCircle, Mic } from 'lucide-react';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -22,7 +23,7 @@ import {
 import Loader from './Loader';
 import EndCallButton from './EndCallButton';
 import { cn } from '@/lib/utils';
-import ChatComponent from './ChatComponent'
+import ChatComponent from './ChatComponent';
 
 type CallLayoutType = 'grid' | 'speaker-left' | 'speaker-right';
 
@@ -33,13 +34,41 @@ const MeetingRoom = () => {
   const [layout, setLayout] = useState<CallLayoutType>('speaker-left');
   const [showParticipants, setShowParticipants] = useState(false);
   const [showChat, setShowChat] = useState(false);
-  const { useCallCallingState } = useCallStateHooks();
+  const [isTranscribing, setIsTranscribing] = useState(false); // State for transcription status
+  const { useCallCallingState, useCallSettings, useIsCallTranscribingInProgress } = useCallStateHooks();
   const callingState = useCallCallingState();
   const call = useCall();
+  const { transcription } = useCallSettings() || {};
+  useEffect(() => {
+    if (transcription?.mode === TranscriptionSettingsRequestModeEnum.AUTO_ON && !isTranscribing) {
+      call?.startTranscription().catch((err) => {
+        console.error('Failed to start transcription', err);
+      });
+    }
+  }, [call, transcription?.mode, isTranscribing]);
+  
 
   if (callingState !== CallingState.JOINED) return <Loader />;
 
   const callId = call?.id;
+
+  // Automatically start transcription when the user joins the call
+
+  const toggleTranscription = () => {
+    if (isTranscribing) {
+      call?.stopTranscription().then(() => {
+        setIsTranscribing(false);
+      }).catch((err) => {
+        console.error('Failed to stop transcription', err);
+      });
+    } else {
+      call?.startTranscription().then(() => {
+        setIsTranscribing(true);
+      }).catch((err) => {
+        console.error('Failed to start transcription', err);
+      });
+    }
+  };
 
   const CallLayout = () => {
     switch (layout) {
@@ -106,6 +135,13 @@ const MeetingRoom = () => {
         <button onClick={() => setShowChat((prev) => !prev)}>
           <div className="cursor-pointer rounded-2xl bg-[#19232d] px-4 py-2 hover:bg-[#4c535b]">
             <MessageCircle size={20} className="text-white" />
+          </div>
+        </button>
+        {/* Transcription button */}
+        <button onClick={toggleTranscription}>
+          <div className="cursor-pointer rounded-2xl bg-[#19232d] px-4 py-2 hover:bg-[#4c535b]">
+            <Mic size={20} className="text-white" />
+            {isTranscribing ? ' Stop Transcription' : ' Start Transcription'}
           </div>
         </button>
         {!isPersonalRoom && <EndCallButton />}
