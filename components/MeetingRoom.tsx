@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useEffect, useState } from 'react';
 import {
   CallControls,
@@ -23,6 +25,7 @@ import Loader from './Loader';
 import EndCallButton from './EndCallButton';
 import { cn } from '@/lib/utils';
 import ChatComponent from './ChatComponent';
+import axios from 'axios';
 
 type CallLayoutType = 'grid' | 'speaker-left' | 'speaker-right';
 
@@ -36,6 +39,9 @@ const MeetingRoom = () => {
   const [isTranscribing, setIsTranscribing] = useState(false);
   const [transcriptionData, setTranscriptionData] = useState('');
   const [transcriptionError, setTranscriptionError] = useState('');
+  const [isProcessingTranscription, setIsProcessingTranscription] = useState(false);
+  const [question, setQuestion] = useState('');
+  const [answer, setAnswer] = useState('');
   const { useCallCallingState, useCallSettings, useIsCallTranscribingInProgress } = useCallStateHooks();
   const callingState = useCallCallingState();
   const call = useCall();
@@ -50,51 +56,19 @@ const MeetingRoom = () => {
       const url = event.call_transcription?.url;
       if (url) {
         try {
-          console.log('Fetching transcription from S3 URL:', url);
-          const response = await fetch(url, {
-            method: 'GET',
-            mode: 'cors',
-          });
-          
-          if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-          }
-          
-          const contentType = response.headers.get("content-type");
-          console.log('Response content type:', contentType);
-          
-          const jsonlData = await response.text();
-          console.log('Received data:', jsonlData);
-          
-          if (!jsonlData.trim()) {
-            throw new Error('Received empty response');
-          }
-          
-          const transcripts = parseJsonlData(jsonlData);
-          const transcriptionText = transcripts.map(transcript => transcript.text).join('\n');
-          setTranscriptionData(transcriptionText);
+          setIsProcessingTranscription(true);
+          const response = await axios.post('http://localhost:5000/process_transcription', { url });
+          console.log('Transcription processed:', response.data);
+          setIsProcessingTranscription(false);
           setTranscriptionError('');
         } catch (error) {
           console.error("Error fetching or processing transcription data:", error);
-          setTranscriptionError(`Failed to fetch transcription: ${error.message}`);
+          setTranscriptionError(`Failed to fetch transcription: ${error instanceof Error ? error.message : 'Unknown error'}`);
         }
       } else {
         console.error("No transcription URL available");
         setTranscriptionError('No transcription URL available');
       }
-    };
-
-    const parseJsonlData = (jsonlString: string): any[] => {
-      const lines = jsonlString.split('\n').filter(line => line.trim());
-      console.log('Parsed JSONL lines:', lines);
-      return lines.map(line => {
-        try {
-          return JSON.parse(line);
-        } catch (error) {
-          console.error('Error parsing JSON line:', line, error);
-          return null;
-        }
-      }).filter(Boolean);
     };
 
     const handleTranscriptionStarted = () => {
@@ -156,6 +130,16 @@ const MeetingRoom = () => {
     }
   };
 
+  const handleAskQuestion = async () => {
+    try {
+      const response = await axios.post('http://localhost:5000/chat', { question });
+      setAnswer(response.data.reply);
+    } catch (error) {
+      console.error("Error asking question:", error);
+      setAnswer("Failed to get an answer. Please try again.");
+    }
+  };
+
   const CallLayout = () => {
     switch (layout) {
       case 'grid':
@@ -189,6 +173,13 @@ const MeetingRoom = () => {
         </div>
       </div>
       
+      {/* Transcription Processing Indicator */}
+      {isProcessingTranscription && (
+        <div className="absolute top-4 right-4 bg-blue-500 text-white px-4 py-2 rounded">
+          Processing Transcription...
+        </div>
+      )}
+
       {/* Transcription Display */}
       {(transcriptionData || transcriptionError) && (
         <div className="absolute bottom-20 left-0 right-0 mx-auto w-3/4 p-4 bg-black bg-opacity-50 text-white rounded-lg max-h-48 overflow-auto">
@@ -200,6 +191,26 @@ const MeetingRoom = () => {
           )}
         </div>
       )}
+      
+      {/* Chat Interface */}
+      <div className="absolute bottom-24 left-0 right-0 mx-auto w-3/4 p-4 bg-black bg-opacity-50 text-white rounded-lg">
+        <input
+          type="text"
+          value={question}
+          onChange={(e) => setQuestion(e.target.value)}
+          placeholder="Ask a question about the transcription"
+          className="w-full p-2 text-black rounded"
+        />
+        <button onClick={handleAskQuestion} className="mt-2 bg-blue-500 text-white p-2 rounded">
+          Ask
+        </button>
+        {answer && (
+          <div className="mt-4">
+            <h4 className="font-bold">Answer:</h4>
+            <p>{answer}</p>
+          </div>
+        )}
+      </div>
       
       {/* Call Controls */}
       <div className="fixed bottom-0 flex w-full items-center justify-center gap-5">
