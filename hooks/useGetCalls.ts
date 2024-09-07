@@ -4,11 +4,12 @@ import { useUser } from "@clerk/nextjs";
 export const useGetCalls = () => {
   const [calls, setCalls] = useState<Call[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+
   const client = useStreamVideoClient();
   const {user}=useUser()
   useEffect(() => {
   
-
+    
     const loadCalls = async () => {
       if (!client || !user?.id) return;
       setIsLoading(true);
