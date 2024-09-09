@@ -12,7 +12,7 @@ const Sidebar = () => {
 
     return (
         <section 
-            className='relative sticky left-0 top-0 flex h-screen w-fit flex-col justify-between p-6 pt-28 text-white max-sm:hidden lg:w-[350px] animated-gradient' 
+            className=' left-0 top-0 flex h-screen  flex-col justify-between p-6 text-white max-sm:hidden lg:w-[350px] bg-transparent' 
         >
             <div className='flex flex-1 flex-col gap-6'>
                 {sidebarLinks.map((link) => {
@@ -26,7 +26,7 @@ const Sidebar = () => {
                 })}
             </div>
             <div className="bottom-right">
-                <Image src="/images/videoconf.png" alt="Sidebar Image" width={100} height={100} /> 
+                <Image src="/icons/videoconf.png" alt="Sidebar Image" width={200} height={100} /> 
             </div>
         </section>
     )
