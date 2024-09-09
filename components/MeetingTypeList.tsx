@@ -1,16 +1,47 @@
 "use client";
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import Image from 'next/image';
-import HomeCard from './HomeCard';
 import MeetingModal from './MeetingModal';
 import { Call, useStreamVideoClient } from '@stream-io/video-react-sdk';
 import { useChatContext } from 'stream-chat-react';
 import { useToast } from './ui/use-toast';
 import { Textarea } from './ui/textarea';
-import ReactDatePicker from "react-datepicker"
+import ReactDatePicker from "react-datepicker";
 import { Input } from './ui/input';
-import {useUser} from "@clerk/nextjs"
+import { useUser } from "@clerk/nextjs";
+import { AiOutlineVideoCamera, AiOutlineCalendar, AiOutlineFileText, AiOutlineLink } from "react-icons/ai";
+
+
+const HomeCard = ({ img, title, description, handleClick, Icon, bgColor }) => {
+  return (
+    <div
+      className="relative cursor-pointer bg-cover bg-center bg-no-repeat flex items-center justify-center text-center p-4 hover:scale-105 transition-transform duration-300 hover:shadow-lg hover:shadow-black/50"
+      onClick={handleClick}
+      style={{
+        backgroundImage: `url(${img})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        height: '200px',
+        width: '100%',
+        backgroundColor: bgColor,
+      }}
+    >
+      
+      <div className="absolute top-2 left-2 text-white text-3xl">
+        {Icon && <Icon />}
+      </div>
+
+      
+      <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center text-center p-4 hover:bg-opacity-70 transition-opacity duration-300">
+        <div>
+          <h3 className="text-xl font-bold text-white transition-transform duration-300 hover:scale-105">{title}</h3>
+          <p className="text-base text-white transition-transform duration-300 hover:scale-105">{description}</p>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const MeetingTypeList = () => {
   const router = useRouter();
   const [meetingState, setMeetingState] = useState<'isScheduleMeeting' | 'isJoiningMeeting' | 'isInstantMeeting' | undefined>();
@@ -23,8 +54,8 @@ const MeetingTypeList = () => {
   });
   const [callData, setCallData] = useState<Call>();
   const { toast } = useToast();
+  const { client } = useChatContext();
 
-  const {client}=useChatContext()
   const createMeeting = async () => {
     if (!Videoclient || !user) return;
 
@@ -60,10 +91,38 @@ const MeetingTypeList = () => {
 
   return (
     <section className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-4">
-      <HomeCard img="/icons/add-meeting.svg" title="New Meeting" description="Start an instant meeting" handleClick={() => setMeetingState('isInstantMeeting')} className="bg-orange-1" />
-      <HomeCard className="bg-blue-1" img="/icons/schedule.svg" title="Schedule Meeting" description="Plan your meeting" handleClick={() => setMeetingState('isScheduleMeeting')} />
-      <HomeCard className="bg-purple-1" img="/icons/recordings.svg" title="View Recordings" description="Check out your recordings" handleClick={() => router.push('/recordings')} />
-      <HomeCard className="bg-yellow-1" img="/icons/join-meeting.svg" title="Join Meeting" description="Via invitation link" handleClick={() => setMeetingState('isJoiningMeeting')} />
+      <HomeCard 
+        img="/images/meet1.png" 
+        title="New Meeting" 
+        description="Start an instant meeting" 
+        handleClick={() => setMeetingState('isInstantMeeting')} 
+        Icon={AiOutlineVideoCamera}
+        bgColor="#475569" 
+      />
+      <HomeCard 
+        img="/images/meet2.jpeg" 
+        title="Schedule Meeting" 
+        description="Plan your meeting" 
+        handleClick={() => setMeetingState('isScheduleMeeting')} 
+        Icon={AiOutlineCalendar}
+        bgColor="#bbf7d0" 
+      />
+      <HomeCard 
+        img="/images/meet3.jpeg" 
+        title="View Recordings" 
+        description="Check out your recordings" 
+        handleClick={() => router.push('/recordings')} 
+        Icon={AiOutlineFileText}
+        bgColor="#5eead4" 
+      />
+      <HomeCard 
+        img="/images/meet4.jpeg" 
+        title="Join Meeting" 
+        description="Via invitation link" 
+        handleClick={() => setMeetingState('isJoiningMeeting')} 
+        Icon={AiOutlineLink}
+        bgColor="#818cf8" 
+      />
       
       {!callData ? (
         <MeetingModal 
@@ -78,7 +137,7 @@ const MeetingTypeList = () => {
             <label className='text-base text-normal leading[22px] text-sky-2'>
               Add a description
             </label>
-            <Textarea className='border-none bg-dark-3 focus-vsible:ring-0 focus-visible:ring-offset-0 ' onChange={(e) => setValues({ ...values, description: e.target.value })}></Textarea>
+            <Textarea className='border-none bg-dark-3 focus-visible:ring-0 focus-visible:ring-offset-0 ' onChange={(e) => setValues({ ...values, description: e.target.value })}></Textarea>
           </div>
           <div className='flex w-full flex-col gap-2.5'>
             <label className='text-base text-normal leading[22px] text-sky-2'>
