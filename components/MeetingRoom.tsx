@@ -57,7 +57,7 @@ const MeetingRoom = () => {
       if (url) {
         try {
           setIsProcessingTranscription(true);
-          const response = await axios.post('http://localhost:5000/process_transcription', { url });
+          const response = await axios.post('https://yoom-v2.onrender.com/process_transcription', { url });
           console.log('Transcription processed:', response.data);
           setIsProcessingTranscription(false);
           setTranscriptionError('');
@@ -193,7 +193,7 @@ const MeetingRoom = () => {
       
       {/* Call Controls */}
       <div className="fixed bottom-0 flex w-full items-center justify-center gap-5">
-        <CallControls onLeave={() => router.push(`/`)} />
+        <CallControls onLeave={() => router.push(`/chat`)} />
         <DropdownMenu>
           <div className="flex items-center">
             <DropdownMenuTrigger className="cursor-pointer rounded-2xl bg-[#19232d] px-4 py-2 hover:bg-[#4c535b] ">
