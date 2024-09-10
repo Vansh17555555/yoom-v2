@@ -46,3 +46,4 @@ aiofiles
 openai
 langchain_community
 python-multipart
+tiktoken
