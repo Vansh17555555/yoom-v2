@@ -3,12 +3,10 @@ import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
-import { FaUser, FaUsers } from "react-icons/fa";
-import { FaHome,  FaRegListAlt, FaCalendarAlt, FaTasks, FaEnvelope, FaBook } from 'react-icons/fa';
+import { FaUserAlt, FaHome, FaRegListAlt, FaCalendarAlt, FaEnvelope } from 'react-icons/fa';
 import { UserButton } from "@clerk/nextjs";
 
-
-
+// FloatingNav Component
 export const FloatingNav = ({
   navItems,
   className,
@@ -48,8 +46,21 @@ export const FloatingNav = ({
   );
 };
 
-
-
+// Navbar Component
 export default function Navbar() {
-  return <FloatingNav navItems={ navItems} className="your-custom-class" />;
+  return (
+    <FloatingNav
+      navItems={[
+        { name: 'Home', link: '/', icon: <FaHome /> },
+        { name: 'About Yoom', link: '#about', icon: <FaUserAlt /> },
+        { name: 'Dashboard', link: '/dashboard', icon: <FaHome /> },
+        { name: 'Features', link: '#features', icon: <FaRegListAlt /> },
+        { name: 'Upcoming Meetings', link: '#meetings', icon: <FaCalendarAlt /> },
+        { name: 'Instruction', link: '/instruction', icon: <FaHome /> },
+        { name: 'Our Team', link: '/team', icon: <FaUserAlt /> },
+        { name: 'Contact', link: '#contact', icon: <FaEnvelope /> },
+      ]}
+      className="your-custom-class"
+    />
+  );
 }
