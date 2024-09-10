@@ -184,33 +184,12 @@ const MeetingRoom = () => {
       {(transcriptionData || transcriptionError) && (
         <div className="absolute bottom-20 left-0 right-0 mx-auto w-3/4 p-4 bg-black bg-opacity-50 text-white rounded-lg max-h-48 overflow-auto">
           <h3 className="text-lg font-bold">Transcription</h3>
-          {transcriptionError ? (
-            <p className="text-red-500">{transcriptionError}</p>
-          ) : (
-            <p className="whitespace-pre-wrap">{transcriptionData}</p>
-          )}
+         
         </div>
       )}
       
       {/* Chat Interface */}
-      <div className="absolute bottom-24 left-0 right-0 mx-auto w-3/4 p-4 bg-black bg-opacity-50 text-white rounded-lg">
-        <input
-          type="text"
-          value={question}
-          onChange={(e) => setQuestion(e.target.value)}
-          placeholder="Ask a question about the transcription"
-          className="w-full p-2 text-black rounded"
-        />
-        <button onClick={handleAskQuestion} className="mt-2 bg-blue-500 text-white p-2 rounded">
-          Ask
-        </button>
-        {answer && (
-          <div className="mt-4">
-            <h4 className="font-bold">Answer:</h4>
-            <p>{answer}</p>
-          </div>
-        )}
-      </div>
+      
       
       {/* Call Controls */}
       <div className="fixed bottom-0 flex w-full items-center justify-center gap-5">

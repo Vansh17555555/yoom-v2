@@ -1,0 +1,10 @@
+.featureImage {
+    width: 100%;
+    border-radius: 10px;
+    transition: box-shadow 0.3s ease;
+  }
+  
+  .featureImage:hover {
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.7);
+  }
+  

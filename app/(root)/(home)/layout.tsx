@@ -7,7 +7,7 @@ const Homelayout = ({ children }: { children: React.ReactNode }) => {
   return (
         <div className='flex w-full'>
 
-            <section className='flex min-h-screen flex-1 flex-col px-6 max-md:pb-14 sm:px-14 w-full bg-gradient-to-r from-blue-500 to-purple-600'>
+            <section className='flex min-h-screen flex-1 flex-col px-6 max-md:pb-14 sm:px-14 w-full bg-black'>
                 <div className='w-full'>
                   {children}
                 </div>

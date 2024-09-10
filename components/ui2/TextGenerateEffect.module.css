@@ -1,0 +1,8 @@
+.blur {
+    filter: blur(10px);
+  }
+  
+  .clear {
+    filter: blur(0px);
+  }
+  
