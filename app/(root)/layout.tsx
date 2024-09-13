@@ -1,18 +1,12 @@
-
-import Navbar from '@/components/Navbar'
-import Sidebar from '@/components/Sidebar'
 import MyApp from '@/providers/StreamClientPrvider'
+import React from 'react';
 
-import { StreamVideoProvider } from '@stream-io/video-react-sdk'
-import React from 'react'
-
-const Homelayout = ({children}:{children:React.ReactNode}) => {
+const HomeLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <main>
-    <MyApp>{children}</MyApp>
+      <MyApp>{children}</MyApp>
     </main>
-              
-  )
-}
+  );
+};
 
-export default Homelayout
+export default HomeLayout;

@@ -54,7 +54,9 @@ const ChatComponent: React.FC<ChatComponentProps> = ({ callId }) => {
         <Window>
           <ChannelHeader />
           <MessageList />
-          <MessageInput />
+          <div style={{ marginBottom: '30px', marginTop: '-40px !important' }}> 
+            <MessageInput />
+          </div>
         </Window>
         <Thread />
       </Channel>
