@@ -36,7 +36,7 @@ const DotLottiePlayer: React.FC<DotLottiePlayerProps> = ({ src, width = '500px',
       <Script
         src="https://unpkg.com/@dotlottie/player-component@latest/dist/dotlottie-player.mjs"
         type="module"
-         background="transparent" 
+      
         strategy="afterInteractive"
       />
       <div ref={playerRef} />
