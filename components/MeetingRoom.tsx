@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
+import Whiteboard from './ui2/Whiteboard';
 import {
   CallControls,
   CallParticipantsList,
@@ -13,7 +14,7 @@ import {
   TranscriptionSettingsRequestModeEnum,
 } from '@stream-io/video-react-sdk';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { Users, LayoutList, MessageCircle, Mic } from 'lucide-react';
+import { Users, LayoutList, MessageCircle, Mic, Edit3 } from 'lucide-react';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -31,17 +32,18 @@ type CallLayoutType = 'grid' | 'speaker-left' | 'speaker-right';
 
 const MeetingRoom = () => {
   const searchParams = useSearchParams();
+  const [showWhiteboard, setShowWhiteboard] = useState(false);
   const isPersonalRoom = !!searchParams.get('personal');
   const router = useRouter();
   const [layout, setLayout] = useState<CallLayoutType>('speaker-left');
   const [showParticipants, setShowParticipants] = useState(false);
   const [showChat, setShowChat] = useState(false);
   const [isTranscribing, setIsTranscribing] = useState(false);
-  const [transcriptionData, setTranscriptionData] = useState('');
-  const [transcriptionError, setTranscriptionError] = useState('');
+  const [transcriptionData, setTranscriptionData] = useState<string>('');
+  const [transcriptionError, setTranscriptionError] = useState<string>('');
   const [isProcessingTranscription, setIsProcessingTranscription] = useState(false);
-  const [question, setQuestion] = useState('');
-  const [answer, setAnswer] = useState('');
+  const [question, setQuestion] = useState<string>('');
+  const [answer, setAnswer] = useState<string>('');
   const { useCallCallingState, useCallSettings, useIsCallTranscribingInProgress } = useCallStateHooks();
   const callingState = useCallCallingState();
   const call = useCall();
@@ -58,7 +60,7 @@ const MeetingRoom = () => {
         try {
           setIsProcessingTranscription(true);
           const response = await axios.post('https://yoom-v2.onrender.com/process_transcription', { url });
-          console.log('Transcription processed:', response.data);
+          setTranscriptionData(response.data.transcription || 'No transcription data available');
           setIsProcessingTranscription(false);
           setTranscriptionError('');
         } catch (error) {
@@ -152,9 +154,11 @@ const MeetingRoom = () => {
   };
 
   return (
-    <section className="relative h-screen w-full overflow-hidden pt-4 text-white">
+    <section className="relative h-screen w-full overflow-hidden pt-4 text-white flex justify-center items-center">
       <div className="relative flex size-full items-center justify-center">
-        <div className="flex size-full max-w-[1000px] items-center">
+        <div className={cn("flex size-full max-w-[1000px] items-center", {
+          "max-w-[70%]": showWhiteboard
+        })}>
           <CallLayout />
         </div>
         <div
@@ -171,69 +175,78 @@ const MeetingRoom = () => {
         >
           {callId && <ChatComponent callId={callId} />}
         </div>
-      </div>
-      
-      {/* Transcription Processing Indicator */}
-      {isProcessingTranscription && (
-        <div className="absolute top-4 right-4 bg-blue-500 text-white px-4 py-2 rounded">
-          Processing Transcription...
-        </div>
-      )}
 
-      {/* Transcription Display */}
-      {(transcriptionData || transcriptionError) && (
-        <div className="absolute bottom-20 left-0 right-0 mx-auto w-3/4 p-4 bg-black bg-opacity-50 text-white rounded-lg max-h-48 overflow-auto">
-          <h3 className="text-lg font-bold">Transcription</h3>
-         
-        </div>
-      )}
-      
-      {/* Chat Interface */}
-      
-      
-      {/* Call Controls */}
-      <div className="fixed bottom-0 flex w-full items-center justify-center gap-5">
-        <CallControls onLeave={() => router.push(`/chat`)} />
-        <DropdownMenu>
-          <div className="flex items-center">
-            <DropdownMenuTrigger className="cursor-pointer rounded-2xl bg-[#19232d] px-4 py-2 hover:bg-[#4c535b] ">
-              <LayoutList size={20} className="text-white" />
+        {/* Whiteboard Component */}
+        {showWhiteboard && (
+          <div className="right-0 bottom-0 h-full w-[20%] bg-white">
+            <Whiteboard />
+          </div>
+        )}
+
+        {/* Transcription Processing Indicator */}
+        {isProcessingTranscription && (
+          <div className="absolute top-4 right-4 bg-blue-500 text-white px-4 py-2 rounded">
+            Processing Transcription...
+          </div>
+        )}
+
+        {/* Transcription Display */}
+        {(transcriptionData || transcriptionError) && (
+          <div className="absolute bottom-20 left-0 right-0 mx-auto w-3/4 p-4 bg-gray-800 text-white rounded">
+            {transcriptionError ? (
+              <div>Error: {transcriptionError}</div>
+            ) : (
+              <div>{transcriptionData}</div>
+            )}
+          </div>
+        )}
+
+        <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex gap-2 bg-gray-900 p-4 rounded">
+          <CallControls onLeave={()=>router.push('/chat')} />
+          <CallStatsButton />
+          <DropdownMenu>
+            <DropdownMenuTrigger>
+              <Edit3 className="h-5 w-5 cursor-pointer" />
             </DropdownMenuTrigger>
-          </div>
-          <DropdownMenuContent className="border-dark-1 bg-dark-1 text-white">
-            {['Grid', 'Speaker-Left', 'Speaker-Right'].map((item, index) => (
-              <div key={index}>
-                <DropdownMenuItem
-                  onClick={() =>
-                    setLayout(item.toLowerCase() as CallLayoutType)
-                  }
-                >
-                  {item}
-                </DropdownMenuItem>
-                <DropdownMenuSeparator className="border-dark-1" />
-              </div>
-            ))}
-          </DropdownMenuContent>
-        </DropdownMenu>
-        <CallStatsButton />
-        <button onClick={() => setShowParticipants((prev) => !prev)}>
-          <div className="cursor-pointer rounded-2xl bg-[#19232d] px-4 py-2 hover:bg-[#4c535b]">
-            <Users size={20} className="text-white" />
-          </div>
-        </button>
-        <button onClick={() => setShowChat((prev) => !prev)}>
-          <div className="cursor-pointer rounded-2xl bg-[#19232d] px-4 py-2 hover:bg-[#4c535b]">
-            <MessageCircle size={20} className="text-white" />
-          </div>
-        </button>
-        {/* Transcription button */}
-        <button onClick={toggleTranscription}>
-          <div className="cursor-pointer rounded-2xl bg-[#19232d] px-4 py-2 hover:bg-[#4c535b]">
-            <Mic size={20} className="text-white" />
-            {isTranscribing ? ' Stop Transcription' : ' Start Transcription'}
-          </div>
-        </button>
-        {!isPersonalRoom && <EndCallButton />}
+            <DropdownMenuContent className="w-48 bg-gray-800 text-white">
+              <DropdownMenuItem onClick={() => setLayout('grid')}>
+                <LayoutList className="mr-2 h-5 w-5" />
+                Grid View
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setLayout('speaker-left')}>
+                <LayoutList className="mr-2 h-5 w-5" />
+                Speaker Left
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setLayout('speaker-right')}>
+                <LayoutList className="mr-2 h-5 w-5" />
+                Speaker Right
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onClick={() => setShowParticipants(!showParticipants)}>
+                <Users className="mr-2 h-5 w-5" />
+                Participants
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setShowChat(!showChat)}>
+                <MessageCircle className="mr-2 h-5 w-5" />
+                Chat
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setShowWhiteboard(!showWhiteboard)}>
+                <Mic className="mr-2 h-5 w-5" />
+                Whiteboard
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onClick={toggleTranscription}>
+                <Mic className="mr-2 h-5 w-5" />
+                {isTranscribing ? 'Stop Transcription' : 'Start Transcription'}
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onClick={() => router.push('/chat')}>
+                <MessageCircle className="mr-2 h-5 w-5" />
+                End Call
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
       </div>
     </section>
   );
