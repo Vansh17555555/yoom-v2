@@ -6,6 +6,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import { ClerkProvider } from "@clerk/nextjs";
 import { ThemeProvider } from "@/providers/provider";
 import { Toaster } from "@/components/ui/toaster";
+import { TranscriptionProvider } from "@/context/TranscriptionContext";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -32,7 +33,10 @@ export default function RootLayout({
             enableSystem
             disableTransitionOnChange
           >
-            {children}
+            <TranscriptionProvider>
+              {children}
+            </TranscriptionProvider>
+         
             <Toaster />
           </ThemeProvider>
         </body>
