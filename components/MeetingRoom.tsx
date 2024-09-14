@@ -26,7 +26,8 @@ import Loader from './Loader';
 import { cn } from '@/lib/utils';
 import ChatComponent from './ChatComponent';
 import axios from 'axios';
-
+import { useUser } from '@clerk/nextjs';
+import { useTranscription } from "@/context/TranscriptionContext";
 type CallLayoutType = 'grid' | 'speaker-left' | 'speaker-right';
 
 const MeetingRoom = () => {
@@ -34,6 +35,9 @@ const MeetingRoom = () => {
   const [showWhiteboard, setShowWhiteboard] = useState(false);
   const isPersonalRoom = !!searchParams.get('personal');
   const router = useRouter();
+  const [transcriptionText,setTranscriptionText]=useState<string>()
+  const {user
+} = useUser();
   const [layout, setLayout] = useState<CallLayoutType>('speaker-left');
   const [showParticipants, setShowParticipants] = useState(false);
   const [showChat, setShowChat] = useState(false);
@@ -48,11 +52,11 @@ const MeetingRoom = () => {
   const call = useCall();
   const { transcription } = useCallSettings() || {};
   const transcriptionInProgress = useIsCallTranscribingInProgress();
-
+  console.log(user)
   const [showTranscriptionStarted, setShowTranscriptionStarted] = useState(false);
   const [showTranscriptionStopped, setShowTranscriptionStopped] = useState(false);
   const [showTranscriptionReady, setShowTranscriptionReady] = useState(false);
-
+ 
   useEffect(() => {
     if (!call) return;
 
@@ -62,22 +66,39 @@ const MeetingRoom = () => {
       if (url) {
         try {
           setIsProcessingTranscription(true);
-          const response = await axios.post('https://chat-backend-production-4b30.up.railway.app/process_transcription', { url });
+          const response = await axios.post('https://https://fastapi-backend-production-641e.up.railway.app/process_transcription', { url });
           console.log(response);
-          const processedTranscription = response.data.transcription;
+          const processedTranscription = response.data.transcription_text;
           
-          // Save the transcription to session storage
-          sessionStorage.setItem('lastTranscription', processedTranscription);
+          // Save the transcription to a file and upload to MongoDB
+          const uploadResponse = await fetch('/api/upload-transcription', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ 
+              transcription: processedTranscription,
+              fileName: `transcription_${Date.now()}.txt`,
+              userId:user?.id
+            }),
+          });
+          setTranscriptionText(processedTranscription)
+          if (uploadResponse.ok) {
+            const result = await uploadResponse.json();
+            console.log("File uploaded to MongoDB:", result);
+          } else {
+            throw new Error('Failed to upload transcription');
+          }
           
           setTranscriptionData(processedTranscription);
           setIsProcessingTranscription(false);
           setTranscriptionError('');
           setShowTranscriptionReady(true);
-          console.log("Transcription processed and saved to session storage");
+          console.log("Transcription processed and uploaded to MongoDB");
           setTimeout(() => setShowTranscriptionReady(false), 3000);
         } catch (error) {
-          console.error("Error fetching or processing transcription data:", error);
-          setTranscriptionError(`Failed to fetch transcription: ${error instanceof Error ? error.message : 'Unknown error'}`);
+          console.error("Error processing or uploading transcription:", error);
+          setTranscriptionError(`Failed to process or upload transcription: ${error instanceof Error ? error.message : 'Unknown error'}`);
         }
       } else {
         console.error("No transcription URL available");
@@ -96,6 +117,7 @@ const MeetingRoom = () => {
     const handleTranscriptionStopped = () => {
       console.log('Transcription stopped');
       setIsTranscribing(false);
+      setIsProcessingTranscription(true)
       setShowTranscriptionStopped(true);
       setTimeout(() => setShowTranscriptionStopped(false), 3000);
     };
@@ -192,27 +214,24 @@ const MeetingRoom = () => {
           {callId && <ChatComponent callId={callId} />}
         </div>
 
-        {/* Whiteboard Component */}
         {showWhiteboard && (
           <div className="right-0 bottom-0 h-full w-[20%] bg-white">
             <Whiteboard />
           </div>
         )}
 
-        {/* Transcription Processing Indicator */}
         {isProcessingTranscription && (
           <div className="absolute top-4 right-4 bg-blue-500 text-white px-4 py-2 rounded">
             Processing Transcription...
           </div>
         )}
 
-        {/* Transcription Display */}
         {(transcriptionData || transcriptionError) && (
           <div className="absolute bottom-20 left-0 right-0 mx-auto w-3/4 p-4 bg-gray-800 text-white rounded">
             {transcriptionError ? (
               <div>Error: {transcriptionError}</div>
             ) : (
-              <div>{transcriptionData}</div>
+              <div>Transcription Ready</div>
             )}
           </div>
         )}
