@@ -23,7 +23,6 @@ import {
   DropdownMenuTrigger,
 } from './ui/dropdown-menu';
 import Loader from './Loader';
-import EndCallButton from './EndCallButton';
 import { cn } from '@/lib/utils';
 import ChatComponent from './ChatComponent';
 import axios from 'axios';
@@ -50,6 +49,10 @@ const MeetingRoom = () => {
   const { transcription } = useCallSettings() || {};
   const transcriptionInProgress = useIsCallTranscribingInProgress();
 
+  const [showTranscriptionStarted, setShowTranscriptionStarted] = useState(false);
+  const [showTranscriptionStopped, setShowTranscriptionStopped] = useState(false);
+  const [showTranscriptionReady, setShowTranscriptionReady] = useState(false);
+
   useEffect(() => {
     if (!call) return;
 
@@ -59,10 +62,19 @@ const MeetingRoom = () => {
       if (url) {
         try {
           setIsProcessingTranscription(true);
-          const response = await axios.post('https://yoom-v2.onrender.com/process_transcription', { url });
-          setTranscriptionData(response.data.transcription || 'No transcription data available');
+          const response = await axios.post('https://chat-backend-production-4b30.up.railway.app/process_transcription', { url });
+          console.log(response);
+          const processedTranscription = response.data.transcription;
+          
+          // Save the transcription to session storage
+          sessionStorage.setItem('lastTranscription', processedTranscription);
+          
+          setTranscriptionData(processedTranscription);
           setIsProcessingTranscription(false);
           setTranscriptionError('');
+          setShowTranscriptionReady(true);
+          console.log("Transcription processed and saved to session storage");
+          setTimeout(() => setShowTranscriptionReady(false), 3000);
         } catch (error) {
           console.error("Error fetching or processing transcription data:", error);
           setTranscriptionError(`Failed to fetch transcription: ${error instanceof Error ? error.message : 'Unknown error'}`);
@@ -77,11 +89,15 @@ const MeetingRoom = () => {
       console.log('Transcription started');
       setIsTranscribing(true);
       setTranscriptionError('');
+      setShowTranscriptionStarted(true);
+      setTimeout(() => setShowTranscriptionStarted(false), 3000);
     };
 
     const handleTranscriptionStopped = () => {
       console.log('Transcription stopped');
       setIsTranscribing(false);
+      setShowTranscriptionStopped(true);
+      setTimeout(() => setShowTranscriptionStopped(false), 3000);
     };
 
     const handleTranscriptionFailed = (error: any) => {
@@ -134,7 +150,7 @@ const MeetingRoom = () => {
 
   const handleAskQuestion = async () => {
     try {
-      const response = await axios.post('http://localhost:5000/chat', { question });
+      const response = await axios.post('https://chat-backend-production-4b30.up.railway.app/chat', { question });
       setAnswer(response.data.reply);
     } catch (error) {
       console.error("Error asking question:", error);
