@@ -2,7 +2,7 @@
 import { useEffect } from "react";
 import { motion, stagger, useAnimate } from "framer-motion";
 import { cn } from "@/lib/utils";
-import styles from './TextGenerateEffect.module.css'; // Import CSS module
+import styles from './TextGenerateEffect.module.css'; 
 
 export const TextGenerateEffect = ({
   words,
@@ -22,7 +22,7 @@ export const TextGenerateEffect = ({
       "span",
       {
         opacity: 1,
-        filter: filter ? "blur(0px)" : "none", // This works for the animate function
+        filter: filter ? "blur(0px)" : "none", 
       },
       {
         duration: duration ? duration : 1,

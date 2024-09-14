@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { FaUserAlt, FaHome, FaRegListAlt, FaCalendarAlt, FaEnvelope } from 'react-icons/fa';
 import { UserButton } from "@clerk/nextjs";
-
+import { useRouter } from "next/navigation";
 // FloatingNav Component
 export const FloatingNav = ({
   navItems,
@@ -17,7 +17,12 @@ export const FloatingNav = ({
     icon?: JSX.Element;
   }[];
   className?: string;
-}) => {
+  }) => {
+  const router = useRouter();
+
+  const handleProfileClick = () => {
+    router.push('/profile');
+  }
   return (
     <motion.div
       initial={{ opacity: 1, y: 0 }}  
@@ -38,10 +43,13 @@ export const FloatingNav = ({
           <span className="hidden sm:block text-sm">{navItem.name}</span>
         </Link>
       ))}
-      <button className="border text-sm font-medium relative border-neutral-200 dark:border-white/[0.2] text-white dark:text-white px-4 py-2 rounded-full">
-        <span><UserButton/></span>
-        <span className="absolute inset-x-0 w-1/2 mx-auto -bottom-px bg-gradient-to-r from-transparent via-blue-500 to-transparent h-px" />
-      </button>
+    
+  <div onClick={handleProfileClick} className="cursor-pointer">
+        <button className="border text-sm font-medium relative border-neutral-200 dark:border-white/[0.2] text-white dark:text-white px-4 py-2 rounded-full">
+          <UserButton afterSignOutUrl="/" />
+          <span className="absolute inset-x-0 w-1/2 mx-auto -bottom-px bg-gradient-to-r from-transparent via-blue-500 to-transparent h-px" />
+        </button>
+      </div>
     </motion.div>
   );
 };
