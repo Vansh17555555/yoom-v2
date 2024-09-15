@@ -47,7 +47,7 @@ const teamMembers = [
 
 const TeamPage = () => {
   return (
-    <div className="bg-gray-100 min-h-screen py-12 px-6 flex flex-col items-center">
+    <div className="bg-white min-h-screen py-12 px-6 flex flex-col items-center" id="team">
       <header className="text-center mb-12">
         <h1 className="text-4xl font-bold text-blue-600 mb-4">Meet Our Team</h1>
         <p className="text-lg text-gray-700">Get to know the talented individuals behind our project.</p>
