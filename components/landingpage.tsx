@@ -36,7 +36,7 @@ const LandingPage: React.FC = () => {
             <p className='text-center md:tracking-wider mb-4 text-sm md:text-lg lg:text-2xl'>
               Hi, Start Your Meeting by clicking this Button.
             </p>
-            <a href="#about" className='w-full flex justify-center'>
+            <a href="/dashboard" className='w-full flex justify-center'>
               <MagicButton
                 title="Meeting"
                 icon={<MdOutlineStart />}

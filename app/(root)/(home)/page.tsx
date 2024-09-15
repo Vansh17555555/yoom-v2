@@ -32,8 +32,8 @@ export default function Home() {
   { name: 'Dashboard', link: '/dashboard', icon: <FaHome /> },
   { name: 'Features', link: '#features', icon: <FaRegListAlt /> },
   { name: 'Upcoming Meetings', link: '#meetings', icon: <FaCalendarAlt /> },
-  { name: 'Instruction', link: '/instruction', icon: <FaHome /> },
-  { name: 'Our Team', link: '/team', icon: <FaUserAlt /> },
+  { name: 'Instruction', link: '#instruction', icon: <FaHome /> },
+  { name: 'Our Team', link: '#team', icon: <FaUserAlt /> },
   { name: 'Contact', link: '#contact', icon: <FaEnvelope /> },
         ]} />
           

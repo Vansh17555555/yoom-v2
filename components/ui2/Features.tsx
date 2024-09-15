@@ -44,7 +44,7 @@ const FeatureSection: React.FC = () => {
       id="features"
       style={{
         padding: '4rem 0',
-        backgroundColor: '#f5f5f5',
+        backgroundColor: '#E0E0E0',
         width: '100vw',
         marginLeft: 'calc(50% - 50vw)',
         textAlign: 'center',

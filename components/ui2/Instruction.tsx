@@ -4,12 +4,12 @@ import { MdSchedule, MdSettings } from 'react-icons/md';
 
 const InstructionPage = () => {
     return (
-      <main>
+      <main id='instruction'>
             <link href='/FaVideo'></link>
 
-    <div className="relative w-full min-h-screen bg-gray-100">
+    <div className="relative w-full min-h-screen bg-gray-300">
       
-      <div className="absolute inset-0 bg-gradient-to-r from-blue-500 via-white to-purple-500 z-0"></div>
+      <div className="absolute inset-0 bg-gradient-to-r from-blue-500 via-gray-400 to-purple-500 z-0"></div>
 
       <div className="relative w-full min-h-screen p-6 z-10">
         
