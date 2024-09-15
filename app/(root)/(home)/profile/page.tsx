@@ -80,6 +80,11 @@ const Profile = () => {
             </h2>
             <p className="text-gray-600 mt-2">{user?.primaryEmailAddress?.emailAddress}</p>
           </div>
+<div className="mt-4 bg-blue-600 py-2 px-4 rounded-lg shadow-md hover:from-blue-700 hover:to-purple-600 transition-transform duration-300 transform hover:scale-105">
+    <a href="https://yoom-context-bot-v2.streamlit.app/" target="_blank">Continue with the Downloaded Context</a>
+</div>
+
+
 
           <div className="border-t border-gray-300 pt-8">
             <h2 className="text-3xl font-semibold text-gray-900 mb-4">Transcripts</h2>

@@ -87,9 +87,7 @@ export async function POST(request: Request) {
   } catch (error) {
     console.error('Error uploading transcription:', error);
     return NextResponse.json({ error: 'Error uploading transcription' }, { status: 500 });
-  } finally {
-    await client.close();
-  }
+  } 
 }// app/api/upload-transcription/route.ts
 
 
@@ -98,7 +96,7 @@ export async function GET(request: Request) {
     const userId = request.headers.get('X-User-Id');
 
     console.log('Received request with userId:', userId);
-
+    
     if (!userId || typeof userId !== 'string') {
       console.error('Invalid or missing userId');
       return NextResponse.json({ error: 'Invalid or missing userId' }, { status: 400 });
@@ -124,7 +122,6 @@ export async function GET(request: Request) {
   } catch (error) {
     console.error('Error fetching transcriptions:', error);
     return NextResponse.json({ error: 'Error fetching transcriptions' }, { status: 500 });
-  } finally {
-    await client.close();
-  }
+  } 
+
 }
