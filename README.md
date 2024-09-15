@@ -10,12 +10,9 @@ Yoom is a all in one video calling App..
 
 3. **Transcription Feature**: The person or participants can get Transcript during the post meeting.
 4. **Post meeting Recordings**: Post meeting recording  can be seen. It favours the ones who missed the entire and some parts of the meeting by any reason.
-
-5. **Higly Scalable**: Our Yoom App is very scalable it can accomodate 1 lakh people in a single video call.
-
-6. **Screen Sharing**: It is the feature through which we can show the personal work in the device of any particular person.
-7. **File Sharing** :- Files upto 250 mb can be sent on the chat of the meeting to offer seamless file sharing during meetings.
-8. **Latency Tracking**:-Monitoring network Latency ensure smooth communication and quick resolution of any delay
+5. **Screen Sharing**: It is the feature through which we can show the personal work in the device of any particular person.
+6. **File Sharing** :- Files upto 250 mb can be sent on the chat of the meeting to offer seamless file sharing during meetings.
+7. **Latency Tracking**:-Monitoring network Latency ensure smooth communication and quick resolution of any delay
 
 ## USP of our App
 
