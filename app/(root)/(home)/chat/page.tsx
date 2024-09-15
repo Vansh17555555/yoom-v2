@@ -21,7 +21,7 @@ const ChatComponent = () => {
     console.log(transcriptionText)
     setTimeout(async () => {
       try {
-        const response = await axios.post("https://https://fastapi-backend-production-641e.up.railway.app/chat", { 
+        const response = await axios.post("https://fastapi-backend-production-641e.up.railway.app/chat", { 
           question });
         console.log(response)
         const reply =await response.data.reply;

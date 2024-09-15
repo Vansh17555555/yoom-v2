@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import Whiteboard from './ui2/Whiteboard';
+
 import {
   CallControls,
   CallParticipantsList,
@@ -66,7 +67,7 @@ const MeetingRoom = () => {
       if (url) {
         try {
           setIsProcessingTranscription(true);
-          const response = await axios.post('https://https://fastapi-backend-production-641e.up.railway.app/process_transcription', { url });
+          const response = await axios.post('https://fastapi-backend-production-641e.up.railway.app/process_transcription', { url });
           console.log(response);
           const processedTranscription = response.data.transcription_text;
           
@@ -96,6 +97,8 @@ const MeetingRoom = () => {
           setShowTranscriptionReady(true);
           console.log("Transcription processed and uploaded to MongoDB");
           setTimeout(() => setShowTranscriptionReady(false), 3000);
+           // Send transcription via email
+          
         } catch (error) {
           console.error("Error processing or uploading transcription:", error);
           setTranscriptionError(`Failed to process or upload transcription: ${error instanceof Error ? error.message : 'Unknown error'}`);

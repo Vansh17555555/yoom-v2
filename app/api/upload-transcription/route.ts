@@ -53,7 +53,7 @@ export async function POST(request: Request) {
     if (!user) {
       console.log('User not found. Creating new user.');
       const newUser: User = {
-        _id: new ObjectId().toString(), // Convert ObjectId to string
+        _id:userId, // Convert ObjectId to string
         clerkId: userId,
         name,
         email,
@@ -90,11 +90,12 @@ export async function POST(request: Request) {
   } finally {
     await client.close();
   }
-}
+}// app/api/upload-transcription/route.ts
+
 
 export async function GET(request: Request) {
   try {
-    const { userId } = await request.json(); // Get userId from request body
+    const userId = request.headers.get('X-User-Id');
 
     console.log('Received request with userId:', userId);
 
